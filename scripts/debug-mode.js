@@ -9,8 +9,8 @@
 // @grant        none
 // @require      https://code.jquery.com/jquery-3.6.0.min.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
-// @downloadURL  https://raw.githubusercontent.com/cloudacademy/lab-power-user-scripts/main/debug-mode.js
-// @updateURL    https://raw.githubusercontent.com/cloudacademy/lab-power-user-scripts/main/debug-mode.js
+// @downloadURL  https://raw.githubusercontent.com/cloudacademy/lab-power-user-scripts/main/scripts/debug-mode.js
+// @updateURL    https://raw.githubusercontent.com/cloudacademy/lab-power-user-scripts/main/scripts/debug-mode.js
 // @run-at       document-start
 // ==/UserScript==
 
