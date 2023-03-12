@@ -23,11 +23,9 @@
         const view = (pathElements.length > 2 && !window.location.pathname.includes("/new/")) ? "labstep" : "lab";
         if (view == "lab") {
             let nodes = document.querySelectorAll('meta[Name="description"]');
-            console.log(nodes);
             var seo = "No SEO";
             if (nodes.length > 0) {
                 for (var node of nodes) {
-                    //console.log(node.getAttribute("content"));
                     var content = node.getAttribute("content");
                     if (content == "Accelerate progress up the cloud curve with Cloud Academy's digital training solutions. Build a culture of cloud with technology and guided learning experiences.") {
                         continue;
