@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Admin link
 // @namespace    http://tampermonkey.net/
-// @version      0.9
+// @version      0.10
 // @description  Provide links to open in admin
 // @author       You
 // @match        https://*.cloudacademy.com/*
@@ -60,14 +60,14 @@
         const in_preview = window.location.search.includes('preview=true') ? true : false;
         let lab_start_link = new URL(window.location);
         lab_start_link.searchParams.append('startLab', 'true');
-        let lab_admin_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href='${lab_admin_link}' target='_blank'>Admin</a>`;
-        let lab_session_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href='${lab_sessions_link}' target='_blank'>Sessions</a>`;
-        let lab_preview_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href='${lab_preview_link}' target='_self'>Preview</a>`;
+        let lab_admin_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href="${lab_admin_link}" target='_blank'>Admin</a>`;
+        let lab_session_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href="${lab_sessions_link}" target='_blank'>Sessions</a>`;
+        let lab_preview_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href="${lab_preview_link}" target='_self'>Preview</a>`;
         if (in_preview) {
             lab_preview_link.searchParams.delete('preview');
-            lab_preview_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href='${lab_preview_link}' target='_self'>Preview Off</a>`;
+            lab_preview_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href="${lab_preview_link}" target='_self'>Preview Off</a>`;
         }
-        let lab_start_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href='${lab_start_link}' target='_self'>Start</a>`;
+        let lab_start_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href="${lab_start_link}" target='_self'>Start</a>`;
 
         if(pathElements.includes("lab-challenge")) {
             if (Array.from(document.querySelectorAll(maintenance_mode_selector)).some((t) => t.textContent.includes("maintenance"))) {
@@ -76,9 +76,9 @@
             title_element.insertAdjacentHTML('beforeEnd', `${lab_admin_html}${lab_session_html}${lab_preview_html}`);
             if(view !== "lab") {
                 const lab_step_title_element = document.querySelector(challenge_step_selector);
-                const lab_step_title_query = lab_step_title_element.textContent.replaceAll(' ', '+');
+                const lab_step_title_query = encodeURIComponent(lab_step_title_element.textContent);
                 const lab_step_admin_link = `${schemed_domain}/admin/clouda/laboratories/labstep/?title=${lab_step_title_query}`;
-                lab_step_title_element.insertAdjacentHTML('beforeEnd', `&nbsp;<a id="${admin_link_id}" style='${light_background_link_style}' href='${lab_step_admin_link}' target='_blank'>Admin</a>`);
+                lab_step_title_element.insertAdjacentHTML('beforeEnd', `&nbsp;<a id="${admin_link_id}" style='${light_background_link_style}' href="${lab_step_admin_link}" target='_blank'>Admin</a>`);
             }
         } else {
             const breadcrumb_element = document.querySelector(breadcrumb_title_selector)?.closest('ol')?.querySelector('li:last-child');
@@ -96,11 +96,11 @@
             } else {
                 lab_admin_link = `${schemed_domain}/admin/clouda/laboratories/laboratory/?title=${breadcrumb_title_query}`;
                 lab_sessions_link = `${schemed_domain}/admin/clouda/laboratories/labsession/?q=${breadcrumb_title_query}`;
-                lab_admin_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href='${lab_admin_link}' target='_blank'>Admin</a>`;
-                lab_session_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href='${lab_sessions_link}' target='_blank'>Sessions</a>`;
+                lab_admin_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href="${lab_admin_link}" target='_blank'>Admin</a>`;
+                lab_session_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href="${lab_sessions_link}" target='_blank'>Sessions</a>`;
                 const lab_step_admin_link = `${schemed_domain}/admin/clouda/laboratories/labstep/?title=${title_query}`;
                 breadcrumb_element.insertAdjacentHTML('afterEnd', `${lab_admin_html}${lab_session_html}${lab_preview_html}`);
-                title_element.insertAdjacentHTML('afterEnd', `&nbsp;<a id="${admin_link_id}" style='${link_style}' href='${lab_step_admin_link}' target='_blank'>Admin</a>`);
+                title_element.insertAdjacentHTML('afterEnd', `&nbsp;<a id="${admin_link_id}" style='${link_style}' href="${lab_step_admin_link}" target='_blank'>Admin</a>`);
             }
         }
     }
@@ -116,9 +116,9 @@
         }
 
         validation_check_titles.forEach(element => {
-            const query = element.textContent.trimRight().replaceAll(' ', '+');
+            const query = encodeURIComponent(element.textContent.trimEnd());
             const check_admin_link = `${schemed_domain}/admin/clouda/laboratories/validationcheckfunction/?title=${query}`;
-            element.insertAdjacentHTML('beforeEnd', `&nbsp;<a id="${admin_link_id}" style='${light_background_link_style}' href='${check_admin_link}' target='_blank'>Admin</a>`);
+            element.insertAdjacentHTML('beforeEnd', `&nbsp;<a id="${admin_link_id}" style='${light_background_link_style}' href="${check_admin_link}" target='_blank'>Admin</a>`);
         });
     }
 
