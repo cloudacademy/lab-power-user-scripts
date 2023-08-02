@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Announce Lab
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.6
 // @description  Facilitate creating posts by generating title, providing link, and body text
 // @author       You
 // @match        https://*.cloudacademy.com/*
@@ -63,7 +63,7 @@
         const link = location.href.replace(location.search, '');
 
         if(pathElements.includes("lab-challengeas")) {
-            const title = `New Lab Challenge: ${get_title(title_element)}`;
+            const title = `${date_string()} New Lab Challenge: ${get_title(title_element)}`;
             const challenge_icon_element = document.querySelector(challenge_icon_selector);
             if (!challenge_icon_element || challenge_icon_element.parentElement.querySelector(announce_selector)) {
                 return;
@@ -87,7 +87,7 @@ ${link}
             const announce_element = challenge_icon_element.parentElement.querySelector(announce_selector);
             announce_element.onclick = function() { copy_title(announce_element, title, body); };
         } else {
-            const title = `New Lab: ${get_title(title_element)}`;
+            const title = `${date_string()} New Lab: ${get_title(title_element)}`;
             const lab_description_element = document.querySelector(lab_description_selector);
             const announce_link_target_element = document.querySelector(announce_link_target_selector);
             if (!announce_link_target_element || announce_link_target_element.parentElement.querySelector(announce_selector)) {
@@ -162,5 +162,14 @@ ${link}
         return Array.from(title_element.childNodes)
             .filter(node => node.nodeName !== 'H6')
             .map(node => node.textContent.trim())
+    }
+
+    function date_string() {
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+        const now = new Date();
+        const utcMonth = monthNames[now.getUTCMonth()];
+        const utcYear = now.getUTCFullYear();
+        return `${utcMonth} ${utcYear}`;
     }
 })();
