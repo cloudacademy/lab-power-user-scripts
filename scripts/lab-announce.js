@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Announce Lab
 // @namespace    http://tampermonkey.net/
-// @version      0.6
+// @version      0.7
 // @description  Facilitate creating posts by generating title, providing link, and body text
 // @author       You
 // @match        https://*.cloudacademy.com/*
@@ -38,7 +38,7 @@
     const announce_link_target_selector = "[data-cy=gridRow] > [data-cy=GridCol] > [data-cy=box] > svg";
     const page_title_selector = "[data-cy=gridRow] > [data-cy=GridCol] > [data-cy=box] > [data-cy=text]:not([letter-spacing])";
     const challenge_icon_selector = "div[name='labContent'] > div[type='lab'] > div > span";
-    const lab_description_selector = "[data-cy=GridCol] > [data-cy=gridRow] > [data-cy=GridCol] > [data-cy=text] > div";
+    const lab_description_selector = "[data-cy=GridCol] > [data-cy=gridRow]";
     const challenge_description_selector = "div[name='entityDescription'] > div > div[type='lab'] > div:nth-child(2) > div";
     const announce_id = "announce-lab";
     const announce_selector = `#${announce_id}`;
@@ -62,55 +62,32 @@
         }
         const link = location.href.replace(location.search, '');
 
-        if(pathElements.includes("lab-challengeas")) {
-            const title = `${date_string()} New Lab Challenge: ${get_title(title_element)}`;
-            const challenge_icon_element = document.querySelector(challenge_icon_selector);
-            if (!challenge_icon_element || challenge_icon_element.parentElement.querySelector(announce_selector)) {
-                return;
-            }
-            challenge_icon_element.insertAdjacentHTML('afterEnd', `<span id=${announce_id} style="padding-left: 5px;">${announce_icon_html}</span>`);
-            const challenge_description_element = document.querySelector(challenge_description_selector);
-            const overview_paragraph = challenge_description_element.querySelector('p:first-child').innerText;
-            const learning_objectives_heading = Array.from(challenge_description_element.parentElement.parentElement.parentElement.parentElement.parentElement.querySelectorAll('h4')).find(el => el.textContent.toLowerCase() === 'what will be assessed');
-            let sibling = learning_objectives_heading.nextElementSibling;
-            let learning_objectives = "";
-            while (sibling) {
-                learning_objectives += sibling.outerHTML;
-                sibling = sibling.nextElementSibling;
-            }
-            const body = `A new lab challenge has been published.<br />
-${overview_paragraph}
-${learning_objectives_heading.outerHTML}
-${learning_objectives}
-${link}
-`;
-            const announce_element = challenge_icon_element.parentElement.querySelector(announce_selector);
-            announce_element.onclick = function() { copy_title(announce_element, title, body); };
+        let title, body_intro;
+        if(pathElements.includes("lab-challenge")) {
+            title = `${date_string()} New Lab Challenge: ${get_title(title_element)}`;
+            body_intro = 'A new lab challenge has been published.'
+        } else if(pathElements.includes("lab-assessment")) {
+            title = `${date_string()} New Lab Assessment: ${get_title(title_element)}`;
+            body_intro = 'A new lab asssessment has been published.'
         } else {
-            const title = `${date_string()} New Lab: ${get_title(title_element)}`;
-            const lab_description_element = document.querySelector(lab_description_selector);
-            const announce_link_target_element = document.querySelector(announce_link_target_selector);
-            if (!announce_link_target_element || announce_link_target_element.parentElement.querySelector(announce_selector)) {
-                return;
-            }
-            const overview_paragraph = lab_description_element.querySelector('p:first-child').innerText;
-            const learning_objectives_heading = Array.from(lab_description_element.querySelectorAll('h3')).find(el => el.textContent.toLowerCase() === 'learning objectives');
-            let sibling = learning_objectives_heading.nextElementSibling;
-            let learning_objectives = "";
-            while (sibling.tagName !== "H3") {
-                learning_objectives += sibling.outerHTML;
-                sibling = sibling.nextElementSibling;
-            }
-            const body = `A new lab has been published.<br />
-${overview_paragraph}
-${learning_objectives_heading.outerHTML}
-${learning_objectives}
-${link}
-`;
-            announce_link_target_element.insertAdjacentHTML('afterEnd', `<span id=${announce_id} style="padding-left: 5px;">${announce_icon_html}</span>`);
-            const announce_element = announce_link_target_element.parentElement.querySelector(announce_selector);
-            announce_element.onclick = function() { copy_title(announce_element, title, body); };
+            title = `${date_string()} New Lab: ${get_title(title_element)}`;
+            body_intro = 'A new lab has been published.'
         }
+        const lab_description_element = document.querySelector(lab_description_selector);
+        const announce_link_target_element = document.querySelector(announce_link_target_selector);
+        if (!announce_link_target_element || announce_link_target_element.parentElement.querySelector(announce_selector)) {
+            return;
+        }
+        const lab_description_html = lab_description_element.innerHTML;
+        const formatted_lab_description_html = lab_description_html.replace(/<p>/g, '').replace(/<\/p>/g, '<br />').replace(/<h3>/g, '<strong>').replace(/<\/h3>/g, '</strong>').replace(/<br\s*\/?>\s*<ul>/g, '<ul>')
+        const body = `${body_intro}<br />
+${link}<br />
+${formatted_lab_description_html}
+<strong>Reason for content build</strong>:&nbsp;
+`;
+        announce_link_target_element.insertAdjacentHTML('afterEnd', `<span id=${announce_id} style="padding-left: 5px;">${announce_icon_html}</span>`);
+        const announce_element = announce_link_target_element.parentElement.querySelector(announce_selector);
+        announce_element.onclick = function() { copy_title(announce_element, title, body); };
     }
 
     function copy_title(element, title, body) {
