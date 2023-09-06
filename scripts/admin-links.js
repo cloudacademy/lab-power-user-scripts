@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Admin link
 // @namespace    http://tampermonkey.net/
-// @version      0.11
+// @version      0.12
 // @description  Provide links to open in admin
 // @author       You
 // @match        https://*.cloudacademy.com/*
@@ -73,7 +73,7 @@
             if (Array.from(document.querySelectorAll(maintenance_mode_selector)).some((t) => t.textContent.includes("maintenance"))) {
                 title_element.insertAdjacentHTML('afterEnd', `${lab_start_html}`);
             }
-            title_element.insertAdjacentHTML('beforeEnd', `${lab_admin_html}${lab_session_html}${lab_preview_html}`);
+            title_element.insertAdjacentHTML('afterEnd', `${lab_admin_html}${lab_session_html}${lab_preview_html}`);
             if(view !== "lab") {
                 const lab_step_title_element = document.querySelector(challenge_step_selector);
                 const lab_step_title_query = encodeURIComponent(lab_step_title_element.textContent);
