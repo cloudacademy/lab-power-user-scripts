@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Admin link
 // @namespace    http://tampermonkey.net/
-// @version      0.12
+// @version      0.13
 // @description  Provide links to open in admin
 // @author       You
 // @match        https://*.cloudacademy.com/*
@@ -18,7 +18,7 @@
     'use strict';
 
     const breadcrumb_title_selector = "span[itemprop='name']";
-    const page_title_selector = "[data-cy=gridRow] > [data-cy=GridCol] > [data-cy=box] > [data-cy=text]:not([letter-spacing])";
+    const page_title_selector = "h1[data-cy='heading']";
     const old_page_title_selector = "#lab-page-title";
     const challenge_step_selector = "h2";
     const challenge_validation_title_selector = "[data-cy=challenge-validation-title]";
