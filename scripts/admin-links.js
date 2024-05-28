@@ -81,6 +81,19 @@
                 lab_step_title_element.insertAdjacentHTML('beforeEnd', `&nbsp;<a id="${admin_link_id}" style='${light_background_link_style}' href="${lab_step_admin_link}" target='_blank'>Admin</a>`);
             }
         } else {
+            const preview_lab = document.querySelector("#app > div > div > div > main > section > div > div:nth-child(2) > section > div > nav > ol > li > span");
+            const preview_labstep = document.querySelector(page_title_selector);
+            const preview_lab_query = encodeURIComponent(preview_lab?.textContent);
+            const preview_labstep_query = encodeURIComponent(preview_labstep?.textContent);
+            if (in_preview) {
+                lab_admin_link = `${schemed_domain}/admin/clouda/laboratories/laboratory/?title=${preview_lab_query}`;
+                lab_sessions_link = `${schemed_domain}/admin/clouda/laboratories/labsession/?q=${preview_lab_query}`;
+                lab_admin_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href="${lab_admin_link}" target='_blank'>Admin</a>`;
+                lab_session_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href="${lab_sessions_link}" target='_blank'>Sessions</a>`;
+                const lab_step_admin_link = `${schemed_domain}/admin/clouda/laboratories/labstep/?title=${preview_labstep_query}`;
+                preview_lab.insertAdjacentHTML('afterEnd', `${lab_admin_html}${lab_session_html}${lab_preview_html}`);
+                preview_labstep.insertAdjacentHTML('afterEnd', `&nbsp;<a id="${admin_link_id}" style='${link_style}' href="${lab_step_admin_link}" target='_blank'>Admin</a>`);
+            }
             const breadcrumb_element = document.querySelector(breadcrumb_title_selector)?.closest('ol')?.querySelector('li:last-child');
             if (breadcrumb_element?.querySelector(admin_link_selector) || title_element.querySelector(admin_link_selector)) {
                 return;
