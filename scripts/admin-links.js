@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Admin link
 // @namespace    http://tampermonkey.net/
-// @version      0.13
+// @version      0.14
 // @description  Provide links to open in admin
 // @author       You
 // @match        https://*.cloudacademy.com/*
@@ -17,11 +17,11 @@
 (function() {
     'use strict';
 
-    const breadcrumb_title_selector = "span[itemprop='name']";
+    // #lab-page-title for challenges, h1[data-cy='heading'] for assessments
+    const breadcrumb_title_selector = "nav[type=lab] > ol > li:last-child,#lab-page-title,h1[data-cy='heading']"; 
     const page_title_selector = "h1[data-cy='heading']";
     const old_page_title_selector = "#lab-page-title";
     const challenge_step_selector = "h2";
-    const challenge_validation_title_selector = "[data-cy=challenge-validation-title]";
     const maintenance_mode_selector = "[data-cy=Alert]";
     const validation_check_selector = "[data-cy=validation-single-check] div > strong";
     const admin_link_id = "admin-link";
@@ -51,7 +51,7 @@
                 return;
             }
         }
-        const view = (pathElements.length > 2 && !window.location.pathname.includes("/new/")) ? "labstep" : "lab";
+        const view = (pathElements.length > 2 && !window.location.pathname.includes("/new/")  && !window.location.pathname.includes("/your-results/")) ? "labstep" : "lab";
         const title_query = encodeURIComponent(title_element.textContent);
         let lab_admin_link = `${schemed_domain}/admin/clouda/laboratories/laboratory/?title=${title_query}`;
         let lab_sessions_link = `${schemed_domain}/admin/clouda/laboratories/labsession/?q=${title_query}`;
@@ -69,37 +69,33 @@
         }
         let lab_start_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href="${lab_start_link}" target='_self'>Start</a>`;
 
-        if(pathElements.includes("lab-challenge") || pathElements.includes("lab-assessment")) {
+        if(view === "lab") {
             if (Array.from(document.querySelectorAll(maintenance_mode_selector)).some((t) => t.textContent.includes("maintenance"))) {
                 title_element.insertAdjacentHTML('afterEnd', `${lab_start_html}`);
             }
             title_element.insertAdjacentHTML('afterEnd', `${lab_admin_html}${lab_session_html}${lab_preview_html}`);
-            if(view !== "lab") {
-                const lab_step_title_element = document.querySelector(challenge_step_selector);
-                const lab_step_title_query = encodeURIComponent(lab_step_title_element.textContent);
-                const lab_step_admin_link = `${schemed_domain}/admin/clouda/laboratories/labstep/?title=${lab_step_title_query}`;
-                lab_step_title_element.insertAdjacentHTML('beforeEnd', `&nbsp;<a id="${admin_link_id}" style='${light_background_link_style}' href="${lab_step_admin_link}" target='_blank'>Admin</a>`);
-            }
         } else {
-            const breadcrumb_element = document.querySelector(breadcrumb_title_selector)?.closest('ol')?.querySelector('li:last-child');
+            const breadcrumb_element = document.querySelector(breadcrumb_title_selector);
             if (breadcrumb_element?.querySelector(admin_link_selector) || title_element.querySelector(admin_link_selector)) {
                 return;
             }
 
             const breadcrumb_title_query = encodeURIComponent(breadcrumb_element?.textContent);
 
-            if (view === "lab") {
-                if (Array.from(document.querySelectorAll(maintenance_mode_selector)).some((t) => t.textContent.includes("maintenance"))) {
-                    title_element.insertAdjacentHTML('afterEnd', `${lab_start_html}`);
-                }
-                title_element.insertAdjacentHTML('afterEnd', `${lab_admin_html}${lab_session_html}${lab_preview_html}`);
-            } else {
-                lab_admin_link = `${schemed_domain}/admin/clouda/laboratories/laboratory/?title=${breadcrumb_title_query}`;
-                lab_sessions_link = `${schemed_domain}/admin/clouda/laboratories/labsession/?q=${breadcrumb_title_query}`;
-                lab_admin_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href="${lab_admin_link}" target='_blank'>Admin</a>`;
-                lab_session_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href="${lab_sessions_link}" target='_blank'>Sessions</a>`;
-                const lab_step_admin_link = `${schemed_domain}/admin/clouda/laboratories/labstep/?title=${title_query}`;
-                breadcrumb_element.insertAdjacentHTML('afterEnd', `${lab_admin_html}${lab_session_html}${lab_preview_html}`);
+            if(pathElements.includes("lab-challenge") || pathElements.includes("lab-assessment")) {
+                // challenge lab steps have unique UI for titles
+                const lab_step_title_element = document.querySelector(challenge_step_selector);
+                const lab_step_title_query = encodeURIComponent(lab_step_title_element.textContent);
+                const lab_step_admin_link = `${schemed_domain}/admin/clouda/laboratories/labstep/?title=${lab_step_title_query}`;
+                lab_step_title_element.insertAdjacentHTML('beforeEnd', `&nbsp;<a id="${admin_link_id}" style='${light_background_link_style}' href="${lab_step_admin_link}" target='_blank'>Admin</a>`);
+            }
+            lab_admin_link = `${schemed_domain}/admin/clouda/laboratories/laboratory/?title=${breadcrumb_title_query}`;
+            lab_sessions_link = `${schemed_domain}/admin/clouda/laboratories/labsession/?q=${breadcrumb_title_query}`;
+            lab_admin_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href="${lab_admin_link}" target='_blank'>Admin</a>`;
+            lab_session_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href="${lab_sessions_link}" target='_blank'>Sessions</a>`;
+            const lab_step_admin_link = `${schemed_domain}/admin/clouda/laboratories/labstep/?title=${title_query}`;
+            breadcrumb_element.insertAdjacentHTML('afterEnd', `${lab_admin_html}${lab_session_html}${lab_preview_html}`);
+            if(!pathElements.includes("lab-challenge") && !pathElements.includes("lab-assessment")) {
                 title_element.insertAdjacentHTML('afterEnd', `&nbsp;<a id="${admin_link_id}" style='${link_style}' href="${lab_step_admin_link}" target='_blank'>Admin</a>`);
             }
         }
