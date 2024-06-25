@@ -18,12 +18,12 @@
     'use strict';
 
     // #lab-page-title for challenges, h1[data-cy='heading'] for assessments
-    const breadcrumb_title_selector = "nav[type=lab] > ol > li:last-child,#lab-page-title,h1[data-cy='heading']"; 
+    const breadcrumb_title_selector = "nav[type=lab] > ol > li:last-child,#lab-page-title,h1[data-cy='heading']";
     const page_title_selector = "h1[data-cy='heading']";
     const old_page_title_selector = "#lab-page-title";
     const challenge_step_selector = "h2";
     const maintenance_mode_selector = "[data-cy=Alert]";
-    const validation_check_selector = "[data-cy=validation-single-check] div > strong";
+    const validation_check_selector = "[data-cy=vcf-undefined-alert-title]";
     const admin_link_id = "admin-link";
     const admin_link_selector = `#${admin_link_id}`;
     const link_style = "color:005aff;font-size:12px;";
