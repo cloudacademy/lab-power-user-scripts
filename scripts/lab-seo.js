@@ -7,6 +7,7 @@
 // @grant        none
 // @match        https://*.cloudacademy.com/*
 // @match        https://*.app.qa.com/*
+// @match        https://*.platform.qa.com/*
 // @run-at       document-start
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @downloadURL  https://raw.githubusercontent.com/cloudacademy/lab-power-user-scripts/main/scripts/lab-seo.js
