@@ -5,6 +5,7 @@
 // @description  Facilitate creating posts by generating title, providing link, and body text
 // @author       You
 // @match        https://*.cloudacademy.com/*
+// @match        https://*.platform.qa.com/*
 // @grant        GM_setClipboard
 // @grant        window.focus
 // @require      https://code.jquery.com/jquery-3.6.0.min.js

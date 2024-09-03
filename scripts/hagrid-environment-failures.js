@@ -29,13 +29,13 @@
         } else if (view == "failure") {
             const element = document.querySelector('.readonly a')
             const env_id = element.innerText.split(" ")[2];
-            element.href = `https://cloudacademy.com/admin/clouda/laboratories/labsession/?environment_session_id=${env_id}`;
+            element.href = `https://platform.qa.com/admin/clouda/laboratories/labsession/?environment_session_id=${env_id}`;
             element.target = "_blank";
         }
     }
     function create_admin_link_element(env_id) {
         const admin_link = document.createElement("a");
-        admin_link.href = `https://cloudacademy.com/admin/clouda/laboratories/labsession/?environment_session_id=${env_id}`;
+        admin_link.href = `https://platform.qa.com/admin/clouda/laboratories/labsession/?environment_session_id=${env_id}`;
         admin_link.target = "_blank";
         return admin_link;
     }
