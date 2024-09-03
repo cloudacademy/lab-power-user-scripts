@@ -6,6 +6,7 @@
 // @author       You
 // @match        https://*.cloudacademy.com/*
 // @match        https://*.app.qa.com/*
+// @match        https://*.platform.qa.com/*
 // @grant        none
 // @require      https://code.jquery.com/jquery-3.6.0.min.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
