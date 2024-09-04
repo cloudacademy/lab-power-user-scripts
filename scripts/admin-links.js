@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Admin link
 // @namespace    http://tampermonkey.net/
-// @version      0.15
+// @version      0.16
 // @description  Provide links to open in admin
 // @author       You
 // @match        https://*.cloudacademy.com/*

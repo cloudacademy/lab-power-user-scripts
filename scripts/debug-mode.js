@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Lab Debug Mode
 // @namespace    http://tampermonkey.net/
-// @version      0.7
+// @version      0.8
 // @description  Lab Debug Mode
 // @author       You
 // @match        https://*.cloudacademy.com/*

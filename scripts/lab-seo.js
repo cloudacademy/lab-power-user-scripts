@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Lab SEO
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  Displays the SEO description
 // @author       Andrew Burchill
 // @grant        none

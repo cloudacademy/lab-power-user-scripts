@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Announce Lab
 // @namespace    http://tampermonkey.net/
-// @version      0.7
+// @version      0.8
 // @description  Facilitate creating posts by generating title, providing link, and body text
 // @author       You
 // @match        https://*.cloudacademy.com/*
