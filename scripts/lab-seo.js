@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Lab SEO
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  Displays the SEO description
 // @author       Andrew Burchill
 // @grant        none
@@ -15,14 +15,18 @@
 // ==/UserScript==
 (function() {
     'use strict';
-    const page_title_selector = "[data-cy=gridRow] > [data-cy=GridCol] > [data-cy=box] > [data-cy=text]:not([letter-spacing])";
+    const page_title_selector = "h1[data-cy='heading']";
     const admin_link_selector = "#admin-link";
+    const seo_id = "#seo-injection";
     waitForKeyElements(page_title_selector, labSeo);
     waitForKeyElements(admin_link_selector, labSeo);
     function labSeo() {
         const pathElements = window.location.pathname.split('/').filter(e => e);
         const view = (pathElements.length > 2 && !window.location.pathname.includes("/new/")) ? "labstep" : "lab";
         if (view == "lab") {
+            if (document.querySelector(seo_id)) {
+                return;
+            }
             let nodes = document.querySelectorAll('meta[Name="description"]');
             var seo = "No SEO";
             if (nodes.length > 0) {
@@ -34,8 +38,8 @@
                     seo = content;
                 }
                 const title_element = document.querySelector(page_title_selector);
-                    if (title_element) {
-                        title_element.insertAdjacentHTML('beforeend', '<h6>' + seo + "</h6>");
+                if (title_element) {
+                    title_element.insertAdjacentHTML('beforeend', `<h6 id="${seo_id}">${seo}</h6>`);
                 }
             }
         }
