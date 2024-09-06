@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Lab Hagrid environment failure enrichment
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Displays links to admin from hagrid
 // @author       Logan Rakai
 // @grant        none
