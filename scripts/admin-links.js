@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Admin link
 // @namespace    http://tampermonkey.net/
-// @version      0.15
+// @version      0.18
 // @description  Provide links to open in admin
 // @author       You
 // @match        https://*.cloudacademy.com/*
@@ -24,6 +24,8 @@
     const old_page_title_selector = "#lab-page-title";
     const challenge_step_selector = "h2";
     const maintenance_mode_selector = "[data-cy=Alert]";
+    const old_ui_selector = "[name='undefinedContent']";
+    const new_lab_step_title_selector = "[data-cy='flex-item'] > h2[data-cy='heading']";
     const validation_check_selector = "[data-cy=vcf-undefined-alert-title],[data-cy=vcf-passed-alert-title],[data-cy=vcf-failed-alert-title]";
     const admin_link_id = "admin-link";
     const admin_link_selector = `#${admin_link_id}`;
@@ -94,10 +96,18 @@
             lab_sessions_link = `${schemed_domain}/admin/clouda/laboratories/labsession/?q=${breadcrumb_title_query}`;
             lab_admin_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href="${lab_admin_link}" target='_blank'>Admin</a>`;
             lab_session_html = `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href="${lab_sessions_link}" target='_blank'>Sessions</a>`;
-            const lab_step_admin_link = `${schemed_domain}/admin/clouda/laboratories/labstep/?title=${title_query}`;
             breadcrumb_element.insertAdjacentHTML('afterEnd', `${lab_admin_html}${lab_session_html}${lab_preview_html}`);
             if(!pathElements.includes("lab-challenge") && !pathElements.includes("lab-assessment")) {
-                title_element.insertAdjacentHTML('afterEnd', `&nbsp;<a id="${admin_link_id}" style='${link_style}' href="${lab_step_admin_link}" target='_blank'>Admin</a>`);
+                if (!document.querySelector(old_ui_selector)) {
+                    document.querySelectorAll(new_lab_step_title_selector).forEach(e => {
+                        const title_query = encodeURIComponent(e.textContent);
+                        const lab_step_admin_link = `${schemed_domain}/admin/clouda/laboratories/labstep/?title=${title_query}`;
+                        e.insertAdjacentHTML('afterEnd', `&nbsp;<a id="${admin_link_id}" style='${link_style}${show_on_top_style}' href="${lab_step_admin_link}" target='_blank'>Admin</a>`);
+                    })
+                } else {
+                    const lab_step_admin_link = `${schemed_domain}/admin/clouda/laboratories/labstep/?title=${title_query}`;
+                    title_element.insertAdjacentHTML('afterEnd', `&nbsp;<a id="${admin_link_id}" style='${link_style}' href="${lab_step_admin_link}" target='_blank'>Admin</a>`);
+                }
             }
         }
     }
