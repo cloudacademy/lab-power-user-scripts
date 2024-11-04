@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         Lab Hagrid environment failure enrichment
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  Displays links to admin from hagrid
 // @author       Logan Rakai
 // @grant        none
 // @match        https://hagrid.production.svc.cloudacademy.xyz/admin/environments/environmentfailure/*
 // @match        https://hagrid.production.svc.cloudacademy.xyz/admin/tasks/vcffailure/*
+// @grant        GM_setClipboard
 // @run-at       document-start
 // @require      https://code.jquery.com/jquery-3.6.0.min.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
@@ -32,6 +33,17 @@
             const targetElement = element.parentElement;
             set_new_children(element, targetElement, () => {
                 targetElement.removeChild(element);
+            });
+
+            const headingRowElements = document.querySelectorAll(
+                "div.flex-container > label"
+            );
+            const matchingElements = Array.from(headingRowElements).filter((element) =>
+                    element.innerText.startsWith("Reason") ||
+                    element.innerText.startsWith("Vendor log")
+            );
+            matchingElements.forEach((element) => {
+                insert_copy_button(element);
             });
         }
     }
@@ -59,5 +71,36 @@
     function set_link_tags(element, subdomain, env_id) {
         element.href = `https://${subdomain}.qa.com/admin/clouda/laboratories/labsession/?environment_session_id=${env_id}`;
         element.target = "_blank";
+    }
+    function insert_copy_button(element) {
+        const copyButton = document.createElement("span");
+        copyButton.innerText = "Copy";
+        copyButton.style = "margin-left: 5px; background-color: rgb(16 122 130); padding: 6px; border-radius: 13px;";
+        copyButton.onclick = function () {
+            window.focus();
+            navigator.permissions.query({ name: "clipboard-write" })
+                .then((result) => {
+                    if (result.state == "granted" || result.state == "prompt") {
+                        window.focus();
+                        navigator.clipboard.writeText(element.nextElementSibling.innerText)
+                            .then(
+                                function () {
+                                    console.log("Successfully wrote to clipboard.");
+                                    copyButton.innerText = "Copied!";
+                                },
+                                function (error) {
+                                    console.log(error);
+                                    console.log("Failed to write clipboard.");
+                                }
+                            );
+                    } else {
+                        console.log("Clipboard permissions denied.");
+                    }
+                })
+                .catch((error) => {
+                    console.log("Error: ", error);
+                });
+        };
+        element.appendChild(copyButton);
     }
 })();
