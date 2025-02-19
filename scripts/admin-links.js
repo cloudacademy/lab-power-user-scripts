@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Admin link
 // @namespace    http://tampermonkey.net/
-// @version      0.17
+// @version      0.18
 // @description  Provide links to open in admin
 // @author       You
 // @match        https://*.cloudacademy.com/*
@@ -26,7 +26,7 @@
     const maintenance_mode_selector = "[data-cy=Alert]";
     const old_ui_selector = "[name='undefinedContent']";
     const new_lab_step_title_selector = "[data-cy='flex-item'] > h2[data-cy='heading']";
-    const validation_check_selector = "[data-cy=vcf-undefined-alert-title],[data-cy=vcf-passed-alert-title],[data-cy=vcf-failed-alert-title]";
+    const validation_check_selector = "[data-cy=vcf-null-alert-title],[data-cy=vcf-passed-alert-title],[data-cy=vcf-failed-alert-title]";
     const admin_link_id = "admin-link";
     const admin_link_selector = `#${admin_link_id}`;
     const link_style = "color:005aff;font-size:12px;";
